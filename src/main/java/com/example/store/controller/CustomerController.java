@@ -1,6 +1,6 @@
 package com.example.store.controller;
 
-import com.example.store.dto.CustomerDTO;
+import com.example.store.dto.CustomerDetailDTO;
 import com.example.store.entity.Customer;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
@@ -8,12 +8,18 @@ import com.example.store.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customers")
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -21,13 +27,15 @@ public class CustomerController {
     private final CustomerMapper customerMapper;
 
     @GetMapping
-    public List<CustomerDTO> getAllCustomers() {
-        return customerMapper.customersToCustomerDTOs(customerRepository.findAll());
+    public ResponseEntity<List<CustomerDetailDTO>> getAllCustomers() {
+        List<CustomerDetailDTO> customerDetails = customerMapper.customersToCustomerDTOs(customerRepository.findAll());
+        return ResponseEntity.ok(customerDetails);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CustomerDTO createCustomer(@RequestBody Customer customer) {
-        return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+    public ResponseEntity<CustomerDetailDTO> createCustomer(@RequestBody Customer customer) {
+        CustomerDetailDTO customerDetail = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+        return new ResponseEntity<>(customerDetail, HttpStatus.CREATED);
     }
 }

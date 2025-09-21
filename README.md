@@ -40,8 +40,8 @@ A customer has an ID, a name, and 0 or more orders.
 
 # API
 Two endpoints are provided:
-   * /order
-   * /customer
+   * /orders
+   * /customers
 
 Each of them supports a POST and a GET. The data model is circular - a customer owns a number of orders, and that order necessarily refers back to the customer which owns it.
 To avoid loops in the serializer, when writing out a Customer or an Order, they're mapped to CustomerDTO and OrderDTO which contain truncated versions of the dependent object - CustomerOrderDTO and OrderCustomerDTO respectively.
@@ -70,3 +70,10 @@ Think carefully about the impact on performance when implementing your changes
 The specifications of the tasks have been left deliberately vague. You will be required to exercise judgement about what to deliver - in a real world environment, you would clarify these points in refinement, but since this is a project to be completed without interaction, feel free to make assumptions - but be prepared to defend them when asked.
 There's no CI pipeline associated with this project, but in reality there would be. Consider the things that you would expect that pipeline to verify before allowing your code to be promoted
 Feel free to refactor the codebase if necessary. Bad choices were deliberately made when creating this project.
+
+# Comments on changes done
+1. Renamed the DTO classes so they are easier to understand.
+2. Removed wilcard imports as we do not want to import classes that we are not using. This can cause conflicts and reduces readability.
+3. Renamed endpoint from /order to /orders and from /customer to /customers to adhere to good REST api practices.
+4. Updated controllers to return ResponseEntity so that we have  full control over the HTTP response, including status code, headers, and body.
+5. 

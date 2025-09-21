@@ -62,7 +62,7 @@ class OrderControllerTests {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
         when(orderRepository.save(order)).thenReturn(order);
 
-        mockMvc.perform(post("/order")
+        mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(order)))
                 .andExpect(status().isCreated())
@@ -74,7 +74,7 @@ class OrderControllerTests {
     void testGetOrder() throws Exception {
         when(orderRepository.findAll()).thenReturn(List.of(order));
 
-        mockMvc.perform(get("/order"))
+        mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..description").value("Test Order"))
                 .andExpect(jsonPath("$..customer.name").value("John Doe"));

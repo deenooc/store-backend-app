@@ -46,9 +46,11 @@ class CustomerControllerTests {
     void testCreateCustomer() throws Exception {
         when(customerRepository.save(customer)).thenReturn(customer);
 
-        mockMvc.perform(post("/customer")
+        mockMvc.perform(
+                post("/customers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(customer)))
+                        .content(objectMapper.writeValueAsString(customer))
+                )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("John Doe"));
     }
@@ -57,9 +59,8 @@ class CustomerControllerTests {
     void testGetAllCustomers() throws Exception {
         when(customerRepository.findAll()).thenReturn(List.of(customer));
 
-        mockMvc.perform(get("/customer"))
+        mockMvc.perform(get("/customers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..name").value("John Doe"));
-        ;
     }
 }
