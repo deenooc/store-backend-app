@@ -1,15 +1,14 @@
 package com.example.store.controller;
 
+import com.example.store.dto.CustomerDetailDTO;
 import com.example.store.entity.Customer;
-import com.example.store.mapper.CustomerMapper;
-import com.example.store.repository.CustomerRepository;
+import com.example.store.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CustomerController.class)
-@ComponentScan(basePackageClasses = CustomerMapper.class)
 class CustomerControllerTests {
 
     @Autowired
@@ -31,33 +29,35 @@ class CustomerControllerTests {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private CustomerRepository customerRepository;
+    private CustomerService customerService;
 
-    private Customer customer;
+    private CustomerDetailDTO customerDto;
 
     @BeforeEach
     void setUp() {
-        customer = new Customer();
-        customer.setName("John Doe");
-        customer.setId(1L);
+        customerDto = new CustomerDetailDTO();
+        customerDto.setName("John Doe");
+        customerDto.setId(1L);
     }
 
     @Test
     void testCreateCustomer() throws Exception {
-        when(customerRepository.save(customer)).thenReturn(customer);
+        Customer customer = new Customer();
+        customer.setId(1L);
+        customer.setName("John Doe");
 
-        mockMvc.perform(
-                post("/customers")
+        when(customerService.createCustomer(customer)).thenReturn(customerDto);
+
+        mockMvc.perform(post("/customers")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(customer))
-                )
+                        .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("John Doe"));
     }
 
     @Test
     void testGetAllCustomers() throws Exception {
-        when(customerRepository.findAll()).thenReturn(List.of(customer));
+        when(customerService.getAllCustomers()).thenReturn(List.of(customerDto));
 
         mockMvc.perform(get("/customers"))
                 .andExpect(status().isOk())

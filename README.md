@@ -75,5 +75,5 @@ Feel free to refactor the codebase if necessary. Bad choices were deliberately m
 1. Renamed the DTO classes so they are easier to understand.
 2. Removed wilcard imports as we do not want to import classes that we are not using. This can cause conflicts and reduces readability.
 3. Renamed endpoint from /order to /orders and from /customer to /customers to adhere to good REST api practices.
-4. Updated controllers to return ResponseEntity so that we have  full control over the HTTP response, including status code, headers, and body.
-5. 
+4. Updated controllers to return ResponseEntity so that we have  full control over the HTTP response, including status code, headers, and body. But open for discussion!
+5. Added a service layer to contain the business logic, instead of implementing the business logic in the controllers.
