@@ -77,3 +77,5 @@ Feel free to refactor the codebase if necessary. Bad choices were deliberately m
 3. Renamed endpoint from /order to /orders and from /customer to /customers to adhere to good REST api practices.
 4. Updated controllers to return ResponseEntity so that we have  full control over the HTTP response, including status code, headers, and body. But open for discussion!
 5. Added a service layer to contain the business logic, instead of implementing the business logic in the controllers.
+6. On the find customers based on a query string endpoint, it is assumed the string is case-insensitive.
+7. 

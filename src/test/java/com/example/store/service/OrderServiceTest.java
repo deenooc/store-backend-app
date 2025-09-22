@@ -88,6 +88,4 @@ class OrderServiceTest {
         verify(orderRepository, times(1)).findById(id);
         verify(orderMapper, times(1)).orderToOrderDTO(order);
     }
-
-
 }

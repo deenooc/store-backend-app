@@ -15,6 +15,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,6 +56,8 @@ class CustomerControllerTests {
                         .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("John Doe"));
+
+        verify(customerService, times(1)).createCustomer(customer);
     }
 
     @Test
@@ -62,5 +67,25 @@ class CustomerControllerTests {
         mockMvc.perform(get("/customers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..name").value("John Doe"));
+
+        verify(customerService, times(1)).getAllCustomers();
+    }
+
+    @Test
+    void testGetCustomersByNameSubstring() throws Exception {
+        when(customerService.findCustomersWithName("do")).thenReturn(List.of(customerDto));
+
+        mockMvc.perform(get("/customers/search?name=do"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..name").value("John Doe"));
+
+        verify(customerService, times(1)).findCustomersWithName("do");
+    }
+
+    @Test
+    void testGetCustomersByNameSubstringValidationError() throws Exception {
+        mockMvc.perform(get("/customers/search?name=")).andExpect(status().isBadRequest());
+
+        verifyNoInteractions(customerService);
     }
 }

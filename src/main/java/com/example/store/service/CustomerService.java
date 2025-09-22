@@ -25,4 +25,9 @@ public class CustomerService {
     public List<CustomerDetailDTO> getAllCustomers() {
         return customerMapper.customersToCustomerDTOs(customerRepository.findAll());
     }
+
+    public List<CustomerDetailDTO> findCustomersWithName(String nameSubstring) {
+        return customerMapper.customersToCustomerDTOs(
+                customerRepository.findByNameCaseInsensitiveSubstring(nameSubstring));
+    }
 }
