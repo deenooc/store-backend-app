@@ -14,6 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -28,7 +31,7 @@ class CustomerServiceTest {
     @Mock
     private CustomerRepository customerRepository;
 
-    private CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
+    private final CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
 
     @InjectMocks
     private CustomerService customerService;
@@ -61,20 +64,24 @@ class CustomerServiceTest {
     @Test
     void test_get_all_customers() {
         Customer customer = getCustomer();
+        Pageable pageable = mock(Pageable.class);
+        Page<Customer> customers = new PageImpl<>(List.of(customer));
 
         // Given
-        when(customerRepository.findAll()).thenReturn(List.of(customer));
+        when(customerRepository.findAll(pageable)).thenReturn(customers);
 
         // When
-        List<CustomerDetailDTO> actual = customerService.getAllCustomers();
+        Page<CustomerDetailDTO> actual = customerService.getAllCustomers(pageable);
 
         // Then
         assertThat(actual).isNotEmpty();
-        assertThat(actual.get(0).getId()).isEqualTo(1L);
-        assertThat(actual.get(0).getName()).isEqualTo("Dan Bee");
-        assertThat(actual.get(0).getOrders()).isNotEmpty();
-        assertThat(actual.get(0).getOrders().get(0).getId()).isEqualTo(100L);
-        assertThat(actual.get(0).getOrders().get(0).getDescription()).isEqualTo("Bags of flour");
+        assertThat(actual.getTotalElements()).isEqualTo(1);
+
+        CustomerDetailDTO actualCustomer = actual.getContent().get(0);
+        assertThat(actualCustomer.getName()).isEqualTo("Dan Bee");
+        assertThat(actualCustomer.getOrders()).isNotEmpty();
+        assertThat(actualCustomer.getOrders().get(0).getId()).isEqualTo(100L);
+        assertThat(actualCustomer.getOrders().get(0).getDescription()).isEqualTo("Bags of flour");
     }
 
     private static Customer getCustomer() {

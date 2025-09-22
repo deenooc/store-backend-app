@@ -71,11 +71,21 @@ The specifications of the tasks have been left deliberately vague. You will be r
 There's no CI pipeline associated with this project, but in reality there would be. Consider the things that you would expect that pipeline to verify before allowing your code to be promoted
 Feel free to refactor the codebase if necessary. Bad choices were deliberately made when creating this project.
 
-# Comments on changes done
-1. Renamed the DTO classes so they are easier to understand.
+# Comments on changes done (Bonnie)
+1. Renamed the DTO classes so they are easier to understand. Ideally they would have name like CustomerCreateRequest, CustomerCreateResponse but I didn't have time to implement the changes. Entity also should not be exposed in the endpoint (like it is currently) on the create endpoints.
 2. Removed wilcard imports as we do not want to import classes that we are not using. This can cause conflicts and reduces readability.
-3. Renamed endpoint from /order to /orders and from /customer to /customers to adhere to good REST api practices.
-4. Updated controllers to return ResponseEntity so that we have  full control over the HTTP response, including status code, headers, and body. But open for discussion!
+3. Renamed endpoint from `/order` to `/orders` and from `/customer` to `/customers` to adhere to good REST api practices.
+4. Updated controllers to return ResponseEntity so that we have full control over the HTTP response, including status code, headers, and body. But open for discussion!
 5. Added a service layer to contain the business logic, instead of implementing the business logic in the controllers.
-6. On the find customers based on a query string endpoint, it is assumed the string is case-insensitive.
-7. 
+6. Added @Transactional on Service operations where the database is updated.
+
+*Assumptions on tasks*:
+- On the find customers based on a query-string feature, it is assumed the string is case-insensitive.
+
+*Performance related (Task 3)*:
+- Added Hikari connection pooling for the database.
+- Add pagination to all the list endpoints such that we can load data in subsets. 
+e.g. http://localhost:8080/customers?page=1&size=5 or simply http://localhost:8080/customers?page=1 (default page size = 20 will be used)
+- Search improvement suggestion: For the customer search by query-string feature, we might think about set up postgres pg_trgm trigram index so ILIKE '%foo%' is accelerated.
+- Caching suggestion: we have to identify the frequently accessed data to cache - using Redis, for example.
+- TODO: Avoid N+1 Query Problem. When load the customer, we fetch all the orders for each customer. This can lead to 1+N queries for the find all customers feature.

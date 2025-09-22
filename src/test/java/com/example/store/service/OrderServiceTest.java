@@ -10,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,20 +56,24 @@ class OrderServiceTest {
 
     @Test
     void testFindAllOrders() {
-        List<Order> orders = List.of(mock(Order.class));
-        List<OrderDetailDTO> orderDetails = List.of(mock(OrderDetailDTO.class));
+        Order order = mock(Order.class);
+        Page<Order> orders = new PageImpl<>(List.of(order));
+        OrderDetailDTO orderDetail = mock(OrderDetailDTO.class);
+        List<OrderDetailDTO> orderDetails = List.of(orderDetail);
+
+        Pageable pageable = mock(Pageable.class);
 
         // Given
-        when(orderRepository.findAll()).thenReturn(orders);
-        when(orderMapper.ordersToOrderDTOs(orders)).thenReturn(orderDetails);
+        when(orderRepository.findAll(pageable)).thenReturn(orders);
+        when(orderMapper.orderToOrderDTO(order)).thenReturn(orderDetail);
 
         // When
-        List<OrderDetailDTO> actual = orderService.retrieveAllOrders();
+        Page<OrderDetailDTO> actual = orderService.retrieveAllOrders(pageable);
 
         // Then
-        assertThat(actual).isEqualTo(orderDetails);
-        verify(orderRepository, times(1)).findAll();
-        verify(orderMapper, times(1)).ordersToOrderDTOs(orders);
+        assertThat(actual.getContent()).isEqualTo(orderDetails);
+        verify(orderRepository, times(1)).findAll(pageable);
+        verify(orderMapper, times(1)).orderToOrderDTO(order);
     }
 
     @Test

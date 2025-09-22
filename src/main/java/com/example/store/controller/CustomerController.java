@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +29,8 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    public ResponseEntity<List<CustomerDetailDTO>> getAllCustomers() {
-        List<CustomerDetailDTO> customerDetails = customerService.getAllCustomers();
+    public ResponseEntity<Page<CustomerDetailDTO>> getAllCustomers(Pageable pageable) {
+        Page<CustomerDetailDTO> customerDetails = customerService.getAllCustomers(pageable);
         return ResponseEntity.ok(customerDetails);
     }
 

@@ -9,12 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -62,13 +66,14 @@ class CustomerControllerTests {
 
     @Test
     void testGetAllCustomers() throws Exception {
-        when(customerService.getAllCustomers()).thenReturn(List.of(customerDto));
+        Page<CustomerDetailDTO> customerDetails = new PageImpl<>(List.of(customerDto));
+        when(customerService.getAllCustomers(any(Pageable.class))).thenReturn(customerDetails);
 
         mockMvc.perform(get("/customers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..name").value("John Doe"));
 
-        verify(customerService, times(1)).getAllCustomers();
+        verify(customerService, times(1)).getAllCustomers(any(Pageable.class));
     }
 
     @Test
