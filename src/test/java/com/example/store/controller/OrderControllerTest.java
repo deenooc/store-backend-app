@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -72,6 +73,30 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..description").value("Test Order"))
                 .andExpect(jsonPath("$..customer.name").value("John Doe"));
+    }
+
+    @Test
+    void testGetOrderById() throws Exception {
+        OrderDetailDTO orderDetail = getOrderDetailDto(order);
+        Long id = 1L;
+
+        when(orderService.findOrderById(id)).thenReturn(orderDetail);
+
+        mockMvc.perform(get("/orders/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description").value("Test Order"))
+                .andExpect(jsonPath("$.customer.name").value("John Doe"));
+    }
+
+    @Test
+    void testGetOrderByIdNotFound() throws Exception {
+        Long id = 1L;
+
+        when(orderService.findOrderById(id)).thenReturn(null);
+
+        mockMvc.perform(get("/orders/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Order with id = 1 not found."));
     }
 
     private OrderDetailDTO getOrderDetailDto(Order order) {

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,5 +25,10 @@ public class OrderService {
 
     public List<OrderDetailDTO> retrieveAllOrders() {
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
+    }
+
+    public OrderDetailDTO findOrderById(Long id) {
+        Optional<Order> orderResult = orderRepository.findById(id);
+        return orderResult.map(orderMapper::orderToOrderDTO).orElse(null);
     }
 }
