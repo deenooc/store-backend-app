@@ -1,6 +1,6 @@
 package com.example.store.controller;
 
-import com.example.store.dto.CustomerDetailDTO;
+import com.example.store.dto.CustomerDTO;
 import com.example.store.entity.Customer;
 import com.example.store.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,11 +38,11 @@ class CustomerControllerTests {
     @MockitoBean
     private CustomerService customerService;
 
-    private CustomerDetailDTO customerDto;
+    private CustomerDTO customerDto;
 
     @BeforeEach
     void setUp() {
-        customerDto = new CustomerDetailDTO();
+        customerDto = new CustomerDTO();
         customerDto.setName("John Doe");
         customerDto.setId(1L);
     }
@@ -66,7 +66,7 @@ class CustomerControllerTests {
 
     @Test
     void testGetAllCustomers() throws Exception {
-        Page<CustomerDetailDTO> customerDetails = new PageImpl<>(List.of(customerDto));
+        Page<CustomerDTO> customerDetails = new PageImpl<>(List.of(customerDto));
         when(customerService.getAllCustomers(any(Pageable.class))).thenReturn(customerDetails);
 
         mockMvc.perform(get("/customers"))

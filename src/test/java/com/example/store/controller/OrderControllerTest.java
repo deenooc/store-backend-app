@@ -1,7 +1,7 @@
 package com.example.store.controller;
 
 import com.example.store.dto.CustomerSummaryDTO;
-import com.example.store.dto.OrderDetailDTO;
+import com.example.store.dto.OrderDTO;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
 import com.example.store.service.OrderService;
@@ -56,7 +56,7 @@ class OrderControllerTest {
 
     @Test
     void testCreateOrder() throws Exception {
-        OrderDetailDTO orderCreated = getOrderDetailDto(order);
+        OrderDTO orderCreated = getOrderDetailDto(order);
         when(orderService.createOrder(order)).thenReturn(orderCreated);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/orders")
@@ -69,8 +69,8 @@ class OrderControllerTest {
 
     @Test
     void testGetOrders() throws Exception {
-        OrderDetailDTO orderDetail = getOrderDetailDto(order);
-        Page<OrderDetailDTO> orderDetails = new PageImpl<>(List.of(orderDetail));
+        OrderDTO orderDetail = getOrderDetailDto(order);
+        Page<OrderDTO> orderDetails = new PageImpl<>(List.of(orderDetail));
 
         when(orderService.retrieveAllOrders(any(Pageable.class))).thenReturn(orderDetails);
 
@@ -82,7 +82,7 @@ class OrderControllerTest {
 
     @Test
     void testGetOrderById() throws Exception {
-        OrderDetailDTO orderDetail = getOrderDetailDto(order);
+        OrderDTO orderDetail = getOrderDetailDto(order);
         Long id = 1L;
 
         when(orderService.findOrderById(id)).thenReturn(orderDetail);
@@ -104,8 +104,8 @@ class OrderControllerTest {
                 .andExpect(content().string("Order with id = 1 not found."));
     }
 
-    private OrderDetailDTO getOrderDetailDto(Order order) {
-        OrderDetailDTO orderDetail = new OrderDetailDTO();
+    private OrderDTO getOrderDetailDto(Order order) {
+        OrderDTO orderDetail = new OrderDTO();
         orderDetail.setId(order.getId());
         orderDetail.setDescription(order.getDescription());
 

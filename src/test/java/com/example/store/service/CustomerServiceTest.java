@@ -1,6 +1,6 @@
 package com.example.store.service;
 
-import com.example.store.dto.CustomerDetailDTO;
+import com.example.store.dto.CustomerDTO;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
 import com.example.store.mapper.CustomerMapper;
@@ -50,7 +50,7 @@ class CustomerServiceTest {
         when(customerRepository.save(customer)).thenReturn(customerCreated);
 
         // When
-        CustomerDetailDTO actual = customerService.createCustomer(customer);
+        CustomerDTO actual = customerService.createCustomer(customer);
 
         // Then
         assertThat(actual).isNotNull();
@@ -71,13 +71,13 @@ class CustomerServiceTest {
         when(customerRepository.findAll(pageable)).thenReturn(customers);
 
         // When
-        Page<CustomerDetailDTO> actual = customerService.getAllCustomers(pageable);
+        Page<CustomerDTO> actual = customerService.getAllCustomers(pageable);
 
         // Then
         assertThat(actual).isNotEmpty();
         assertThat(actual.getTotalElements()).isEqualTo(1);
 
-        CustomerDetailDTO actualCustomer = actual.getContent().get(0);
+        CustomerDTO actualCustomer = actual.getContent().get(0);
         assertThat(actualCustomer.getName()).isEqualTo("Dan Bee");
         assertThat(actualCustomer.getOrders()).isNotEmpty();
         assertThat(actualCustomer.getOrders().get(0).getId()).isEqualTo(100L);

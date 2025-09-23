@@ -1,6 +1,6 @@
 package com.example.store.service;
 
-import com.example.store.dto.CustomerDetailDTO;
+import com.example.store.dto.CustomerDTO;
 import com.example.store.entity.Customer;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
@@ -24,15 +24,15 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
 
     @Transactional
-    public CustomerDetailDTO createCustomer(@Valid Customer customer) {
+    public CustomerDTO createCustomer(@Valid Customer customer) {
         return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
     }
 
-    public Page<CustomerDetailDTO> getAllCustomers(Pageable pageable) {
+    public Page<CustomerDTO> getAllCustomers(Pageable pageable) {
         return customerRepository.findAll(pageable).map(customerMapper::customerToCustomerDTO);
     }
 
-    public List<CustomerDetailDTO> findCustomersWithName(String nameSubstring) {
+    public List<CustomerDTO> findCustomersWithName(String nameSubstring) {
         return customerMapper.customersToCustomerDTOs(
                 customerRepository.findByNameCaseInsensitiveSubstring(nameSubstring));
     }

@@ -1,6 +1,6 @@
 package com.example.store.service;
 
-import com.example.store.dto.OrderDetailDTO;
+import com.example.store.dto.OrderDTO;
 import com.example.store.entity.Order;
 import com.example.store.mapper.OrderMapper;
 import com.example.store.repository.OrderRepository;
@@ -39,17 +39,17 @@ class OrderServiceTest {
     void testCreateOrder() {
         Order order = mock(Order.class);
         Order orderSaved = mock(Order.class);
-        OrderDetailDTO orderDetailDTO = mock(OrderDetailDTO.class);
+        OrderDTO orderDto = mock(OrderDTO.class);
 
         // Given
         when(orderRepository.save(order)).thenReturn(orderSaved);
-        when(orderMapper.orderToOrderDTO(orderSaved)).thenReturn(orderDetailDTO);
+        when(orderMapper.orderToOrderDTO(orderSaved)).thenReturn(orderDto);
 
         // When
-        OrderDetailDTO actual = orderService.createOrder(order);
+        OrderDTO actual = orderService.createOrder(order);
 
         // Then
-        assertThat(actual).isEqualTo(orderDetailDTO);
+        assertThat(actual).isEqualTo(orderDto);
         verify(orderRepository, times(1)).save(order);
         verify(orderMapper, times(1)).orderToOrderDTO(orderSaved);
     }
@@ -58,8 +58,8 @@ class OrderServiceTest {
     void testFindAllOrders() {
         Order order = mock(Order.class);
         Page<Order> orders = new PageImpl<>(List.of(order));
-        OrderDetailDTO orderDetail = mock(OrderDetailDTO.class);
-        List<OrderDetailDTO> orderDetails = List.of(orderDetail);
+        OrderDTO orderDetail = mock(OrderDTO.class);
+        List<OrderDTO> orderDetails = List.of(orderDetail);
 
         Pageable pageable = mock(Pageable.class);
 
@@ -68,7 +68,7 @@ class OrderServiceTest {
         when(orderMapper.orderToOrderDTO(order)).thenReturn(orderDetail);
 
         // When
-        Page<OrderDetailDTO> actual = orderService.retrieveAllOrders(pageable);
+        Page<OrderDTO> actual = orderService.retrieveAllOrders(pageable);
 
         // Then
         assertThat(actual.getContent()).isEqualTo(orderDetails);
@@ -79,19 +79,19 @@ class OrderServiceTest {
     @Test
     void testFindOrderById() {
         Order order = mock(Order.class);
-        OrderDetailDTO orderDetailDto = mock(OrderDetailDTO.class);
+        OrderDTO orderDto = mock(OrderDTO.class);
 
         Long id = 1L;
 
         // Given
         when(orderRepository.findById(id)).thenReturn(Optional.of(order));
-        when(orderMapper.orderToOrderDTO(order)).thenReturn(orderDetailDto);
+        when(orderMapper.orderToOrderDTO(order)).thenReturn(orderDto);
 
         // When
-        OrderDetailDTO actual = orderService.findOrderById(id);
+        OrderDTO actual = orderService.findOrderById(id);
 
         // Then
-        assertThat(actual).isEqualTo(orderDetailDto);
+        assertThat(actual).isEqualTo(orderDto);
         verify(orderRepository, times(1)).findById(id);
         verify(orderMapper, times(1)).orderToOrderDTO(order);
     }

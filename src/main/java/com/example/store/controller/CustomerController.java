@@ -1,6 +1,6 @@
 package com.example.store.controller;
 
-import com.example.store.dto.CustomerDetailDTO;
+import com.example.store.dto.CustomerDTO;
 import com.example.store.entity.Customer;
 import com.example.store.service.CustomerService;
 
@@ -29,21 +29,21 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    public ResponseEntity<Page<CustomerDetailDTO>> getAllCustomers(Pageable pageable) {
-        Page<CustomerDetailDTO> customerDetails = customerService.getAllCustomers(pageable);
+    public ResponseEntity<Page<CustomerDTO>> getAllCustomers(Pageable pageable) {
+        Page<CustomerDTO> customerDetails = customerService.getAllCustomers(pageable);
         return ResponseEntity.ok(customerDetails);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<CustomerDetailDTO>> findCustomersWithName(
+    public ResponseEntity<List<CustomerDTO>> findCustomersWithName(
             @RequestParam(name = "name") @NotBlank String nameSubstring) {
-        List<CustomerDetailDTO> customerDetails = customerService.findCustomersWithName(nameSubstring);
+        List<CustomerDTO> customerDetails = customerService.findCustomersWithName(nameSubstring);
         return ResponseEntity.ok(customerDetails);
     }
 
     @PostMapping
-    public ResponseEntity<CustomerDetailDTO> createCustomer(@RequestBody Customer customer) {
-        CustomerDetailDTO customerCreated = customerService.createCustomer(customer);
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody Customer customer) {
+        CustomerDTO customerCreated = customerService.createCustomer(customer);
         return ResponseEntity.status(HttpStatus.CREATED).body(customerCreated);
     }
 }

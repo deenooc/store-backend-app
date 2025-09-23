@@ -1,9 +1,11 @@
 package com.example.store.controller;
 
-import com.example.store.dto.OrderDetailDTO;
+import com.example.store.dto.OrderDTO;
 import com.example.store.entity.Order;
 import com.example.store.exception.ResourceNotFoundException;
 import com.example.store.service.OrderService;
+
+import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,14 +31,14 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<Page<OrderDetailDTO>> getAllOrders(Pageable pageable) {
-        Page<OrderDetailDTO> orderDetails = orderService.retrieveAllOrders(pageable);
+    public ResponseEntity<Page<OrderDTO>> getAllOrders(Pageable pageable) {
+        Page<OrderDTO> orderDetails = orderService.retrieveAllOrders(pageable);
         return ResponseEntity.ok(orderDetails);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderDetailDTO> getOrderById(@PathVariable Long id) {
-        OrderDetailDTO orderDetail = orderService.findOrderById(id);
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+        OrderDTO orderDetail = orderService.findOrderById(id);
         if (orderDetail == null) {
             String message = String.format("Order with id = %d not found.", id);
             LOG.info(message);
@@ -46,8 +48,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDetailDTO> createOrder(@RequestBody Order order) {
-        OrderDetailDTO orderDetail = orderService.createOrder(order);
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody @Valid Order order) {
+        OrderDTO orderDetail = orderService.createOrder(order);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderDetail);
     }
 }

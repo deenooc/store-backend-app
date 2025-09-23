@@ -86,6 +86,7 @@ Feel free to refactor the codebase if necessary. Bad choices were deliberately m
 - Added Hikari connection pooling for the database.
 - Add pagination to all the list endpoints such that we can load data in subsets. 
 e.g. http://localhost:8080/customers?page=1&size=5 or simply http://localhost:8080/customers?page=1 (default page size = 20 will be used)
+- Added indexes on the queried columns (like name on customer table).
 - Search improvement suggestion: For the customer search by query-string feature, we might think about set up postgres pg_trgm trigram index so ILIKE '%foo%' is accelerated.
 - Caching suggestion: we have to identify the frequently accessed data to cache - using Redis, for example.
 - TODO: Avoid N+1 Query Problem. When load the customer, we fetch all the orders for each customer. This can lead to 1+N queries for the find all customers feature.
