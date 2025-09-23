@@ -29,7 +29,13 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    public ResponseEntity<Page<CustomerDTO>> getAllCustomers(Pageable pageable) {
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+        List<CustomerDTO> customerDetails = customerService.getAllCustomers();
+        return ResponseEntity.ok(customerDetails);
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<CustomerDTO>> getAllCustomersPaged(Pageable pageable) {
         Page<CustomerDTO> customerDetails = customerService.getAllCustomers(pageable);
         return ResponseEntity.ok(customerDetails);
     }

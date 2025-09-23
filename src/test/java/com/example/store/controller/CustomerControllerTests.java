@@ -66,10 +66,21 @@ class CustomerControllerTests {
 
     @Test
     void testGetAllCustomers() throws Exception {
+        when(customerService.getAllCustomers()).thenReturn(List.of(customerDto));
+
+        mockMvc.perform(get("/customers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..name").value("John Doe"));
+
+        verify(customerService, times(1)).getAllCustomers();
+    }
+
+    @Test
+    void testGetAllCustomersPaged() throws Exception {
         Page<CustomerDTO> customerDetails = new PageImpl<>(List.of(customerDto));
         when(customerService.getAllCustomers(any(Pageable.class))).thenReturn(customerDetails);
 
-        mockMvc.perform(get("/customers"))
+        mockMvc.perform(get("/customers/paged"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..name").value("John Doe"));
 

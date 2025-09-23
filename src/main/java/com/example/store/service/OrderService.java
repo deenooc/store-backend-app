@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,5 +34,9 @@ public class OrderService {
     public OrderDTO findOrderById(Long id) {
         Optional<Order> orderResult = orderRepository.findById(id);
         return orderResult.map(orderMapper::orderToOrderDTO).orElse(null);
+    }
+
+    public List<OrderDTO> retrieveAllOrders() {
+        return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
     }
 }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
@@ -30,9 +32,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(dto));
     }
 
-    @GetMapping
+    @GetMapping("/paged")
     public ResponseEntity<Page<ProductDTO>> getAllProducts(Pageable pageable) {
         return ResponseEntity.ok(productService.getAllProducts(pageable));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAllProductsPaged() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")

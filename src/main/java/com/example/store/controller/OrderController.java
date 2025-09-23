@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -31,7 +33,13 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<Page<OrderDTO>> getAllOrders(Pageable pageable) {
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<OrderDTO> orderDetails = orderService.retrieveAllOrders();
+        return ResponseEntity.ok(orderDetails);
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<OrderDTO>> getAllOrdersPaged(Pageable pageable) {
         Page<OrderDTO> orderDetails = orderService.retrieveAllOrders(pageable);
         return ResponseEntity.ok(orderDetails);
     }

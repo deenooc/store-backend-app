@@ -15,7 +15,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -55,14 +54,14 @@ class ProductControllerTest {
     }
 
     @Test
-    void testGetAllProducts() throws Exception {
+    void testGetAllProductsPaged() throws Exception {
         ProductDTO productDto = new ProductDTO();
         productDto.setDescription("Sample Product");
         Page<ProductDTO> productDtos = new PageImpl<>(List.of(productDto));
 
         when(productService.getAllProducts(any(Pageable.class))).thenReturn(productDtos);
 
-        mockMvc.perform(get("/products"))
+        mockMvc.perform(get("/products/paged"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..description").value("Sample Product"));
 
@@ -70,11 +69,25 @@ class ProductControllerTest {
     }
 
     @Test
+    void testGetAllProducts() throws Exception {
+        ProductDTO productDto = new ProductDTO();
+        productDto.setDescription("Sample Product");
+
+        when(productService.getAllProducts()).thenReturn(List.of(productDto));
+
+        mockMvc.perform(get("/products"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..description").value("Sample Product"));
+
+        verify(productService, times(1)).getAllProducts();
+    }
+
+    @Test
     void testGetProductById() throws Exception {
         ProductDTO productDto = new ProductDTO();
         productDto.setDescription("Sample Product");
         productDto.setId(1L);
-        productDto.setOrderIds(Set.of(101L));
+        productDto.setOrderIds(List.of(101L));
 
         when(productService.getProductById(1L)).thenReturn(productDto);
 

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,5 +23,5 @@ public class Product {
     private String description;
 
     @ManyToMany(mappedBy = "products")
-    private Set<Order> orders;
+    private List<Order> orders;
 }

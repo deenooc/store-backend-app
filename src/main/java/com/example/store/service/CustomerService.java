@@ -36,4 +36,8 @@ public class CustomerService {
         return customerMapper.customersToCustomerDTOs(
                 customerRepository.findByNameCaseInsensitiveSubstring(nameSubstring));
     }
+
+    public List<CustomerDTO> getAllCustomers() {
+        return customerMapper.customersToCustomerDTOs(customerRepository.findAll());
+    }
 }

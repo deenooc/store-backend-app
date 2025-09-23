@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class ProductDTO {
@@ -13,5 +13,5 @@ public class ProductDTO {
     @NotBlank
     private String description;
 
-    private Set<Long> orderIds;
+    private List<Long> orderIds;
 }

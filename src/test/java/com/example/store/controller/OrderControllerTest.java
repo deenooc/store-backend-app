@@ -68,11 +68,23 @@ class OrderControllerTest {
     }
 
     @Test
-    void testGetOrders() throws Exception {
+    void testGetOrdersPaged() throws Exception {
         OrderDTO orderDetail = getOrderDetailDto(order);
         Page<OrderDTO> orderDetails = new PageImpl<>(List.of(orderDetail));
 
         when(orderService.retrieveAllOrders(any(Pageable.class))).thenReturn(orderDetails);
+
+        mockMvc.perform(get("/orders/paged"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..description").value("Test Order"))
+                .andExpect(jsonPath("$..customer.name").value("John Doe"));
+    }
+
+    @Test
+    void testGetOrders() throws Exception {
+        OrderDTO orderDetail = getOrderDetailDto(order);
+
+        when(orderService.retrieveAllOrders()).thenReturn(List.of(orderDetail));
 
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
