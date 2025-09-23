@@ -3,6 +3,10 @@ spring:
     url: jdbc:postgresql://localhost:5433/store
     username: admin
     password: admin
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 30000
   jpa:
     hibernate:
       ddl-auto: validate
@@ -13,11 +17,3 @@ spring:
         default_batch_fetch_size: 10
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: when-authorized
