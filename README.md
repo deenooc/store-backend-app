@@ -71,7 +71,9 @@ The specifications of the tasks have been left deliberately vague. You will be r
 There's no CI pipeline associated with this project, but in reality there would be. Consider the things that you would expect that pipeline to verify before allowing your code to be promoted
 Feel free to refactor the codebase if necessary. Bad choices were deliberately made when creating this project.
 
-# Comments on changes done (Bonnie)
+------------------------------------------------------------------------
+# Summary of changes done & suggestions (by Bonnie)
+*Changes:*
 1. Renamed some DTO classes so they are easier to understand. Ideally they would have name like CustomerCreateRequest, CustomerCreateResponse but this requires some redesign. Currently we are using Entity classes in the endpoint, and this should be updated.
 2. Removed wilcard imports as we do not want to import classes that we are not using. This can cause conflicts and reduces readability.
 3. Renamed endpoint from `/order` to `/orders` and from `/customer` to `/customers` to adhere to good REST api practices.
@@ -79,7 +81,9 @@ Feel free to refactor the codebase if necessary. Bad choices were deliberately m
 5. Added a service layer to contain the business logic, instead of implementing the business logic in the controllers.
 6. Added @Transactional on Service operations where the database is updated.
 7. Added actuator dependency to monitor and manage the application in production.
-8. Added different application profiles (dev, test, prod) to manage different configurations for different environments.
+8. Added an exception handler (GlobalExceptionHandler) to handle exceptions globally and return appropriate HTTP responses.
+9. Override equals and hashcode in the entity beans to ensure correct behaviour in collections, ORM framework and domain logic.
+10. Added different application profiles (dev, test, prod) to manage different configurations for different environments.
 So to run the application in dev mode (default), use:
 ```shell
 ./gradlew bootRun -Dspring.profiles.active=dev
@@ -96,15 +100,15 @@ So to run the application in dev mode (default), use:
 *Assumptions on tasks*:
 - On the find customers based on a query-string feature, it is assumed the string is case-insensitive.
 
-*Performance related implementations/suggestions (Task 3)*:
+*Performance related implementations/suggestions (Task 3):*
 - Added Hikari connection pooling for the database.
 - Add pagination to all the list endpoints such that we can load data in subsets. 
 e.g. http://localhost:8080/customers?page=1&size=5 or simply http://localhost:8080/customers?page=1 (default page size = 20 will be used)
 - Added indexes on the queried columns (like name on customer table).
 - Avoid N+1 Query Problem. When load the customer, we fetch the orders for each customer. This can lead to 1+N queries for the find all customers feature.
 
-Suggestions to make the application more production ready:
-- Search improvement suggestion: For the customer search by query-string feature, we might think about set up postgres pg_trgm trigram index so ILIKE '%foo%' is accelerated.
+*Suggestions to make the application more production ready:*
+- Search improvement suggestion: For the customer search by query-string feature, we might think about set up postgres `pg_trgm` trigram index so ILIKE '%foo%' is accelerated.
 - Caching suggestion: we have to identify the frequently accessed data to cache - using Redis, for example.
 - Add more consistent logging to the application.
 - Add validation on all the request payloads.

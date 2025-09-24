@@ -1,0 +1,26 @@
+# Ignore build output
+build/
+out/
+.gradle/
+target/
+
+# Ignore IDE files
+.idea/
+*.iml
+.vscode/
+
+# Ignore OS files
+.DS_Store
+
+# Ignore test reports
+test-results/
+reports/
+
+# Ignore node/npm files
+node_modules/
+npm-debug.log
+
+# Ignore environment files
+.env
+application-dev.yml
+*.keystore
