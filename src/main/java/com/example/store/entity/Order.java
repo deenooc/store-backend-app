@@ -13,11 +13,16 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Data
+@Getter
+@Setter
 @Table(name = "\"order\"")
 public class Order {
     @Id
@@ -36,4 +41,28 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> products;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id)
+                && Objects.equals(description, order.description)
+                && Objects.equals(customer, order.customer)
+                && Objects.equals(products, order.products);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, customer, products);
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" + "id="
+                + id + ", description='"
+                + description + '\'' + ", customer="
+                + customer + ", products="
+                + products + '}';
+    }
 }
