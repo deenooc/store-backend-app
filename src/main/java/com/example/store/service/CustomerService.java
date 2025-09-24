@@ -5,8 +5,6 @@ import com.example.store.entity.Customer;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
 
-import jakarta.validation.Valid;
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -24,7 +22,7 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
 
     @Transactional
-    public CustomerDTO createCustomer(@Valid Customer customer) {
+    public CustomerDTO createCustomer(Customer customer) {
         return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
     }
 

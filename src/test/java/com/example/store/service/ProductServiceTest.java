@@ -48,7 +48,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void test_createProduct_successfully() {
+    void testCreateProductSuccessfully() {
         // Given
         when(productRepository.save(any(Product.class))).thenReturn(product);
         when(productMapper.toDto(product)).thenReturn(productDTO);
@@ -66,7 +66,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void test_getAllProducts_with_pageable() {
+    void testGetAllProductsWithPageable() {
         // Given
         Pageable pageable = mock(Pageable.class);
         Page<Product> products = new PageImpl<>(List.of(product));
@@ -85,7 +85,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void test_getProductById_found() {
+    void testGetProductByIdFound() {
         // Given
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(productMapper.toDto(product)).thenReturn(productDTO);
@@ -102,7 +102,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void test_getProductById_not_found() {
+    void testGetProductByIdNotFound() {
         // Given
         when(productRepository.findById(2L)).thenReturn(Optional.empty());
 

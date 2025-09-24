@@ -68,7 +68,7 @@ class OrderServiceTest {
         when(orderMapper.orderToOrderDTO(order)).thenReturn(orderDetail);
 
         // When
-        Page<OrderDTO> actual = orderService.retrieveAllOrders(pageable);
+        Page<OrderDTO> actual = orderService.getAllOrders(pageable);
 
         // Then
         assertThat(actual.getContent()).isEqualTo(orderDetails);

@@ -34,13 +34,13 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        List<OrderDTO> orderDetails = orderService.retrieveAllOrders();
+        List<OrderDTO> orderDetails = orderService.getAllOrders();
         return ResponseEntity.ok(orderDetails);
     }
 
     @GetMapping("/paged")
     public ResponseEntity<Page<OrderDTO>> getAllOrdersPaged(Pageable pageable) {
-        Page<OrderDTO> orderDetails = orderService.retrieveAllOrders(pageable);
+        Page<OrderDTO> orderDetails = orderService.getAllOrders(pageable);
         return ResponseEntity.ok(orderDetails);
     }
 

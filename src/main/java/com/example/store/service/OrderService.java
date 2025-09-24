@@ -27,7 +27,7 @@ public class OrderService {
         return orderMapper.orderToOrderDTO(orderRepository.save(order));
     }
 
-    public Page<OrderDTO> retrieveAllOrders(Pageable pageable) {
+    public Page<OrderDTO> getAllOrders(Pageable pageable) {
         return orderRepository.findAll(pageable).map(orderMapper::orderToOrderDTO);
     }
 
@@ -36,7 +36,7 @@ public class OrderService {
         return orderResult.map(orderMapper::orderToOrderDTO).orElse(null);
     }
 
-    public List<OrderDTO> retrieveAllOrders() {
+    public List<OrderDTO> getAllOrders() {
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
     }
 }
