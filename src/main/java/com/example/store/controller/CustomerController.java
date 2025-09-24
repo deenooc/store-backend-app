@@ -43,7 +43,7 @@ public class CustomerController {
     @GetMapping("/search")
     public ResponseEntity<List<CustomerDTO>> findCustomersWithName(
             @RequestParam(name = "name") @NotBlank String nameSubstring) {
-        List<CustomerDTO> customerDetails = customerService.findCustomersWithName(nameSubstring);
+        List<CustomerDTO> customerDetails = customerService.findCustomersWithName(nameSubstring.trim());
         return ResponseEntity.ok(customerDetails);
     }
 

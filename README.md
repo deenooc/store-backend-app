@@ -58,7 +58,7 @@ The API is documented in the OpenAPI file OpenAPI.yaml. Note that this spec incl
       * A product has an ID and a description. 
       * Add a POST endpoint to create a product
       * Add a GET endpoint to return all products, and a specific product by ID
-        * In both cases, also return a list of the order IDs which contain those products
+      * In both cases, also return a list of the order IDs which contain those products
       * Change the orders endpoint to return a list of products contained in the order
 
 # Bonus points
@@ -72,21 +72,54 @@ There's no CI pipeline associated with this project, but in reality there would 
 Feel free to refactor the codebase if necessary. Bad choices were deliberately made when creating this project.
 
 # Comments on changes done (Bonnie)
-1. Renamed the DTO classes so they are easier to understand. Ideally they would have name like CustomerCreateRequest, CustomerCreateResponse but I didn't have time to implement the changes. Entity also should not be exposed in the endpoint (like it is currently) on the create endpoints.
+1. Renamed some DTO classes so they are easier to understand. Ideally they would have name like CustomerCreateRequest, CustomerCreateResponse but this requires some redesign. Currently we are using Entity classes in the endpoint, and this should be updated.
 2. Removed wilcard imports as we do not want to import classes that we are not using. This can cause conflicts and reduces readability.
 3. Renamed endpoint from `/order` to `/orders` and from `/customer` to `/customers` to adhere to good REST api practices.
 4. Updated controllers to return ResponseEntity so that we have full control over the HTTP response, including status code, headers, and body. But open for discussion!
 5. Added a service layer to contain the business logic, instead of implementing the business logic in the controllers.
 6. Added @Transactional on Service operations where the database is updated.
-
+7. Added actuator dependency to monitor and manage the application in production.
+8. Added different application profiles (dev, test, prod) to manage different configurations for different environments.
+So to run the application in dev mode (default), use:
+```shell
+./gradlew bootRun -Dspring.profiles.active=dev
+```
+9. Added a SecurityConfig for a stateless REST API with security rules: 
+-	Read endpoints (GET customers, orders, products) → open to everyone.
+-	Write endpoints (all POST requests) → require authentication.
+-	Authentication method: HTTP Basic Auth.
+-	Sessions: disabled (stateless).
+-	CSRF: disabled (safe for stateless APIs).
+-	CORS: enabled with defaults.
+-	Health check (/actuator/health) → always accessible.
+ 
 *Assumptions on tasks*:
 - On the find customers based on a query-string feature, it is assumed the string is case-insensitive.
 
-*Performance related (Task 3)*:
+*Performance related implementations/suggestions (Task 3)*:
 - Added Hikari connection pooling for the database.
 - Add pagination to all the list endpoints such that we can load data in subsets. 
 e.g. http://localhost:8080/customers?page=1&size=5 or simply http://localhost:8080/customers?page=1 (default page size = 20 will be used)
 - Added indexes on the queried columns (like name on customer table).
+- Avoid N+1 Query Problem. When load the customer, we fetch the orders for each customer. This can lead to 1+N queries for the find all customers feature.
+
+Suggestions to make the application more production ready:
 - Search improvement suggestion: For the customer search by query-string feature, we might think about set up postgres pg_trgm trigram index so ILIKE '%foo%' is accelerated.
 - Caching suggestion: we have to identify the frequently accessed data to cache - using Redis, for example.
-- TODO: Avoid N+1 Query Problem. When load the customer, we fetch all the orders for each customer. This can lead to 1+N queries for the find all customers feature.
+- Add more consistent logging to the application.
+- Add validation on all the request payloads.
+- Add OpenAPI/Swagger documentation generation.
+- Use a more secure way to manage secrets (like passwords) - not hardcoded in the source code or in environment variables.
+- Use Docker Compose to orchestrate the application and database containers for easier local development and testing.
+- Use environment variables or a configuration server to manage configuration settings for different environments (dev, test, prod).
+- Use a more robust testing framework like Testcontainers for integration tests that require a database.
+- Implement security features like authentication and authorization (e.g. using Spring Security with JWT).
+- Implement rate limiting to protect the API from abuse.
+- Implement monitoring and alerting (e.g., using Prometheus and Grafana).
+- Implement a better CI/CD pipeline to automate quality checks, testing, building, and deployment.
+- Use a more robust secret management tool like HashiCorp Vault or AWS Secrets Manager (personal
+- preference).
+- Avoid using reserved keywords as table names (like 'order'). Better to rename it to 'orders' or sales_order.
+- Add actuator endpoints for health checks and metrics, and application info.
+
+It is too time-consuming to implement and test all the above in this exercise, but I would be happy to discuss them if needed.
